@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="pers.linxi.shop.entity.CategorySecond" table="categorysecond">
+		<id name="csid">
+			<generator class="native" />
+		</id>
+		<property name="csname" />
+		<many-to-one name="category" lazy="false" class="pers.linxi.shop.entity.Category" column="cid"></many-to-one>
+		<set name="ctSet" order-by="csid" lazy="false">
+			<key column="csid" />
+			<one-to-many class="pers.linxi.shop.entity.CategoryThree" />
+		</set>
+ 	</class>
+</hibernate-mapping>

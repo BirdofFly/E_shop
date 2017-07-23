@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop.xsd
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<!-- 引入外部属性文件 -->
+	<context:property-placeholder location="classpath:jdbc.properties" />
+
+	<!-- 配置连接池 -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass" value="${jdbc.driver}" />
+		<property name="jdbcUrl" value="${jdbc.url}" />
+		<property name="user" value="${jdbc.user}" />
+		<property name="password" value="${jdbc.password}" />
+	</bean>
+
+	<!-- 配置Hibernate的sessionFactory对象及其他属性,注入连接池 -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">true</prop>
+				<prop key="hibernate.connection.autocommit">false</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+		
+		<!-- 配置Hibernate的映射文件 -->
+		<property name="mappingResources" >
+			<list>
+				<value>pers/linxi/shop/config/User.hbm.xml</value>
+				<value>pers/linxi/shop/config/Category.hbm.xml</value>
+				<value>pers/linxi/shop/config/Product.hbm.xml</value>
+				<value>pers/linxi/shop/config/CategorySecond.hbm.xml</value>
+				<value>pers/linxi/shop/config/CategoryThree.hbm.xml</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- 配置事务管理器 -->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	<!-- ——————————Action—————————— -->
+	<!-- 配置首页的Action -->
+	<bean id="indexAction" class="pers.linxi.shop.action.IndexAction" scope="prototype">
+		<property name="categoryService" ref="categoryService" />
+		<property name="productService" ref="productService" />
+	</bean>
+	
+	<!-- 配置用户模块的Action -->
+	<bean id="userAction" class="pers.linxi.shop.action.UserAction" scope="prototype">
+		<property name="userService" ref="userService" />
+	</bean>
+	
+	<!-- 配置验证码的Action -->
+	<bean id="securityCodeAction" class="pers.linxi.shop.action.SecurityCodeAction" scope="prototype"></bean>
+	
+	<!-- 配置一级分类的Action -->
+	<bean id="categoryAction" class="pers.linxi.shop.action.CategoryAction" scope="prototype">
+		<property name="categoryService" ref="categoryService" />
+	</bean>
+
+	<!-- 配置商品的Action -->
+	<bean id="productAction" class="pers.linxi.shop.action.ProductAction" scope="prototype">
+		<property name="productService" ref="productService" />
+		<property name="categoryService" ref="categoryService" /> 
+	</bean>
+		
+	<!-- ——————————Service—————————— -->
+	<!-- 配置用户模块的Service -->
+	<bean id="userService" class="pers.linxi.shop.service.UserService">
+		<property name="userDao" ref="userDao" />
+	</bean>
+	
+	<!-- 配置一级分类的Service -->
+	<bean id="categoryService" class="pers.linxi.shop.service.CategoryService">
+		<property name="categoryDao" ref="categoryDao" />
+	</bean>
+	
+	<!-- 配置商品的Service -->
+	<bean id="productService" class="pers.linxi.shop.service.ProductService">
+		<property name="productDao" ref="productDao" />
+	</bean>
+	
+	<!-- ——————————Dao—————————— -->
+	<!-- 配置用户模块的Dao -->
+	<bean id="userDao" class="pers.linxi.shop.dao.UserDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	<!-- 配置一级分类的Dao -->
+	<bean id="categoryDao" class="pers.linxi.shop.dao.CategoryDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	<!-- 配置商品的Dao -->
+	<bean id="productDao" class="pers.linxi.shop.dao.ProductDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+</beans>

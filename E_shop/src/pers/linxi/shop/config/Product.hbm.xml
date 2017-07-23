@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="pers.linxi.shop.entity.Product" table="product">
+		<id name="pid">
+			<generator class="native" />
+		</id>
+		<property name="pname" />
+		<property name="marketPrice" column="market_price" />
+		<property name="shopPrice" column="shop_price" />
+		<property name="image" />
+		<property name="number" />
+		<property name="pdescribe" />
+		<property name="ifHot" column="if_hot" />
+		<property name="pdate" />
+		<many-to-one name="categoryThree" lazy="false" class="pers.linxi.shop.entity.CategoryThree" column="ctid"></many-to-one>
+ 	</class>
+</hibernate-mapping>
